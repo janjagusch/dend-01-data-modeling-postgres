@@ -2,66 +2,61 @@ import os
 import glob
 import psycopg2
 import pandas as pd
-from sql_queries import *
+
+from data_modelling import sql_queries
+from data_modelling.db import create_connection, insert
+from data_modelling.etl_steps.prepare import PreparerSongs, PreparerArtists,\
+PreparerTime, PreparerUsers, PreparerSongplaysStaging
+from data_modelling.etl_steps.read import get_files, read_file
 
 
 def process_song_file(cur, filepath):
+    # create preparers
+    preparer_songs = PreparerSongs()
+    preparer_artists = PreparerArtists()
+
     # open song file
-    df = 
+    df = read_file(filepath)
 
     # insert song record
-    song_data = 
-    cur.execute(song_table_insert, song_data)
-    
+    song_data = preparer_songs.transform(df)
+    insert(sql_queries.song_table_insert, song_data, cur)
+
     # insert artist record
-    artist_data = 
-    cur.execute(artist_table_insert, artist_data)
+    artist_data = preparer_artists.transform(df)
+    insert(sql_queries.artist_table_insert, artist_data, cur)
 
 
 def process_log_file(cur, filepath):
+    # create preparers
+    preparer_time = PreparerTime()
+    preparer_users = PreparerUsers()
+    preparer_songplays_staging = PreparerSongplaysStaging()
+
     # open log file
-    df = 
+    df = read_file(filepath)
 
-    # filter by NextSong action
-    df = 
+    # insert time data
+    time_data = preparer_time.transform(df)
+    insert(sql_queries.time_table_insert, time_data, cur)
 
-    # convert timestamp column to datetime
-    t = 
-    
-    # insert time data records
-    time_data = 
-    column_labels = 
-    time_df = 
+    # insert user data
+    user_data = preparer_users.transform(df)
+    insert(sql_queries.user_table_insert, user_data, cur)
 
-    for i, row in time_df.iterrows():
-        cur.execute(time_table_insert, list(row))
+    # insert songplay staging data
+    songplay_staging_data = preparer_songplays_staging.transform(df)
+    insert(sql_queries.songplay_staging_table_insert, songplay_staging_data, cur)
 
-    # load user table
-    user_df = 
+    # insert songplay data
+    # TODO
 
-    # insert user records
-    for i, row in user_df.iterrows():
-        cur.execute(user_table_insert, row)
-
-    # insert songplay records
-    for index, row in df.iterrows():
-        
-        # get songid and artistid from song and artist tables
-        results = cur.execute(song_select, (row.song, row.artist, row.length))
-        songid, artistid = results if results else None, None
-
-        # insert songplay record
-        songplay_data = 
-        cur.execute(songplay_table_insert, songplay_data)
-
+    # wipe songplay staging table
+    # TODO
 
 def process_data(cur, conn, filepath, func):
     # get all files matching extension from directory
-    all_files = []
-    for root, dirs, files in os.walk(filepath):
-        files = glob.glob(os.path.join(root,'*.json'))
-        for f in files :
-            all_files.append(os.path.abspath(f))
+    all_files = get_files(filepath)
 
     # get total number of files found
     num_files = len(all_files)
@@ -75,7 +70,7 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
-    conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
+    conn = create_connection("sparkifydb")
     cur = conn.cursor()
 
     process_data(cur, conn, filepath='data/song_data', func=process_song_file)
