@@ -1,8 +1,14 @@
-from data_modelling.sql_queries import create_table_queries, drop_table_queries
-from data_modelling.db import create_connection
+"""
+This module provides methods to drop and re-create all tables.
+"""
+from sql_queries import CREATE_TABLE_QUERIES, DROP_TABLE_QUERIES
+from db import create_connection
 
 
 def create_database():
+    """
+    Creates the database and establishes the connection.
+    """
     # connect to default database
     conn = create_connection("studentdb")
     conn.set_session(autocommit=True)
@@ -23,18 +29,28 @@ def create_database():
 
 
 def drop_tables(cur, conn):
-    for query in drop_table_queries:
+    """
+    Drops all tables.
+    """
+    for query in DROP_TABLE_QUERIES:
         cur.execute(query)
         conn.commit()
 
 
 def create_tables(cur, conn):
-    for query in create_table_queries:
+    """
+    Creates all tables.
+    """
+    for query in CREATE_TABLE_QUERIES:
         cur.execute(query)
         conn.commit()
 
 
 def main():
+    """
+    First, creates databse and establishes connection.
+    Then, drops all tables and re-creates them.
+    """
     cur, conn = create_database()
 
     drop_tables(cur, conn)

@@ -1,14 +1,16 @@
-from psycopg2.errors import UniqueViolation, NotNullViolation
-from sqlalchemy import create_engine as _create_engine
+"""
+This module provides methods to interact with the database.
+"""
 import psycopg2
 
-from data_modelling import settings
+import settings
 
 
 def create_connection(database, user_name=None, user_password=None,
-                      host="127.0.0.1", port=5432, connection_string=None):
-    if connection_string is not None:
-        return _create_engine(connection_string)
+                      host="127.0.0.1"):
+    """
+    Creates a connection to a database.
+    """
     if user_name is None:
         user_name = settings.DB_USER_NAME
     if user_password is None:
@@ -25,20 +27,8 @@ def create_connection(database, user_name=None, user_password=None,
 
 
 def insert(query, records, cur):
+    """
+    Inserts all records with query in cursor.
+    """
     for record in records:
-        success = True
         cur.execute(query, record)
-        # try:
-        #     cur.execute(query, record)
-        # except UniqueViolation:
-        #     print("Record violates UNIQUE constraint.")
-        #     success = False
-        # except NotNullViolation:
-        #     print("Record violates NOT NULL constraint.")
-        #     success = False
-        # except Exception as error:
-        #     print("An unkown error has occured.")
-        #     print(error)
-        #     success = False
-        # if success:
-        #     print("Record inserted successfully.")
