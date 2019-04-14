@@ -9,3 +9,4 @@ ipykernel==5.1.0
 jupyterlab==0.35.4
 python-dotenv==0.10.1
 tqdm==4.31.1
+ERAlchemy==1.2.10
