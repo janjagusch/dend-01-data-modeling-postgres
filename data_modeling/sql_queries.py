@@ -41,25 +41,25 @@ CREATE TABLE IF NOT EXISTS songplays_staging (
 USER_TABLE_CREATE = ("""
 CREATE TABLE IF NOT EXISTS users (
         user_id INTEGER PRIMARY KEY,
-     first_name VARCHAR,
-      last_name VARCHAR,
-         gender VARCHAR,
-          level VARCHAR
+     first_name VARCHAR NOT NULL,
+      last_name VARCHAR NOT NULL,
+         gender VARCHAR NOT NULL,
+          level VARCHAR NOT NULL
 );""")
 
 SONG_TABLE_CREATE = ("""
 CREATE TABLE IF NOT EXISTS songs (
         song_id VARCHAR PRIMARY KEY,
-          title VARCHAR,
-      artist_id VARCHAR,
-           year INTEGER,
-       duration FLOAT
+          title VARCHAR NOT NULL,
+      artist_id VARCHAR NOT NULL REFERENCES artists(artist_id) ON DELETE RESTRICT,
+           year INTEGER NOT NULL,
+       duration FLOAT NOT NULL
 );""")
 
 ARTIST_TABLE_CREATE = ("""
 CREATE TABLE IF NOT EXISTS artists (
       artist_id VARCHAR PRIMARY KEY,
-           name VARCHAR,
+           name VARCHAR NOT NULL,
        location VARCHAR,
       lattitude FLOAT,
       longitude FLOAT
@@ -68,12 +68,12 @@ CREATE TABLE IF NOT EXISTS artists (
 TIME_TABLE_CREATE = ("""
 CREATE TABLE IF NOT EXISTS time (
      start_time BIGINT PRIMARY KEY,
-           hour INTEGER,
-            day INTEGER,
-           week INTEGER,
-          month INTEGER,
-           year INTEGER,
-        weekday INTEGER
+           hour INTEGER NOT NULL,
+            day INTEGER NOT NULL,
+           week INTEGER NOT NULL,
+          month INTEGER NOT NULL,
+           year INTEGER NOT NULL,
+        weekday INTEGER NOT NULL
 );""")
 
 
@@ -93,7 +93,8 @@ ON CONFLICT DO NOTHING;
 USER_TABLE_INSERT = ("""
 INSERT INTO users (user_id, first_name, last_name, gender, level)
 VALUES (%(user_id)s, %(first_name)s, %(last_name)s, %(gender)s, %(level)s)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (user_id) DO UPDATE
+SET level = EXCLUDED.level;
 """)
 
 SONG_TABLE_INSERT = ("""
@@ -149,8 +150,8 @@ TRUNCATE songplays_staging;
 """)
 
 # QUERY LISTS
-CREATE_TABLE_QUERIES = [USER_TABLE_CREATE, SONG_TABLE_CREATE,
-                        ARTIST_TABLE_CREATE, TIME_TABLE_CREATE,
+CREATE_TABLE_QUERIES = [USER_TABLE_CREATE, ARTIST_TABLE_CREATE,
+                        SONG_TABLE_CREATE, TIME_TABLE_CREATE,
                         SONGPLAY_TABLE_CREATE, SONGPLAY_STAGING_TABLE_CREATE]
 
 DROP_TABLE_QUERIES = [USER_TABLE_DROP, SONG_TABLE_DROP, ARTIST_TABLE_DROP,

@@ -25,13 +25,13 @@ def process_song_file(cur, filepath):
     # open song file
     song_df = read_file(filepath)
 
-    # insert song record
-    song_data = preparer_songs.transform(song_df)
-    insert(sql_queries.SONG_TABLE_INSERT, song_data, cur)
-
     # insert artist record
     artist_data = preparer_artists.transform(song_df)
     insert(sql_queries.ARTIST_TABLE_INSERT, artist_data, cur)
+
+    # insert song record
+    song_data = preparer_songs.transform(song_df)
+    insert(sql_queries.SONG_TABLE_INSERT, song_data, cur)
 
 
 def process_log_file(cur, filepath):
