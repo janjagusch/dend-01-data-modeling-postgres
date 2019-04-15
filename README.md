@@ -1,6 +1,6 @@
 # Data Modeling Project
 
-This is my solution for the first project in the [Data Engineering Nanodegree at Udactiy ](https://eu.udacity.com/course/data-engineer-nanodegree--nd027). The goal was to design a star schema data warehouse and implement ETL processes for a music streaming startup.
+This is my solution for the first project in the [Data Engineering Nanodegree at Udacity ](https://eu.udacity.com/course/data-engineer-nanodegree--nd027). The goal was to design a star schema data warehouse and implement ETL processes for a music streaming startup.
 
 ## Getting Started
 
