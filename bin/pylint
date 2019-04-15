@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-find data_modelling -name "*.py" -print0 \
+find data_modeling -name "*.py" -print0 \
      | xargs -0 pylint \
                 --output-format=colorized \
                 --unsafe-load-any-extension=y \
