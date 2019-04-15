@@ -68,12 +68,12 @@ CREATE TABLE IF NOT EXISTS artists (
 TIME_TABLE_CREATE = ("""
 CREATE TABLE IF NOT EXISTS time (
      start_time BIGINT PRIMARY KEY,
-           hour INTEGER NOT NULL,
-            day INTEGER NOT NULL,
-           week INTEGER NOT NULL,
-          month INTEGER NOT NULL,
-           year INTEGER NOT NULL,
-        weekday INTEGER NOT NULL
+           hour INTEGER,
+            day INTEGER,
+           week INTEGER,
+          month INTEGER,
+           year INTEGER,
+        weekday INTEGER
 );""")
 
 
